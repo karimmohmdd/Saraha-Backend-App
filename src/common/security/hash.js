@@ -10,6 +10,10 @@ export async function hashValue({
 }) {
   let hashedValue;
 
+  if (typeof value != "string") {
+    value = String(value);
+  }
+
   switch (tool) {
     case HashToolEnum.BCRYPT:
       hashedValue = await bcrypt.hash(value, saltRound);

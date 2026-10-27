@@ -44,7 +44,7 @@ export async function logout(payload, user, action) {
       user.changeCredencialesTime = new Date();
       await user.save();
       const userTokenKeys = await getAllKeys(
-        getBaseRevokeTokenKey(payload.sub),
+        getBaseRevokeTokenKey({ userId: payload.sub }),
       );
       await delKey(userTokenKeys);
       break;

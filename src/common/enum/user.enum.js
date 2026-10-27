@@ -8,7 +8,3 @@ export const RoleEnum = {
   Admin: 1,
 };
 
-export const ActionEnum = {
-  ONE: 0,
-  ALL: 1,
-};

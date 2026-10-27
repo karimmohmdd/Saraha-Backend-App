@@ -18,8 +18,11 @@
     "crypto-js": "^4.2.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "file-type": "^22.2.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.10.2",
+    "multer": "^2.5.0",
+    "nodemailer": "^10.2.0",
     "redis": "^6.3.0",
     "zod": "^4.6.5"
   }

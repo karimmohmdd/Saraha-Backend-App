@@ -35,3 +35,6 @@ export const JWT_USER_REFRESH_SIGNATURE =
 export const JWT_USER_ACCESS_SIGNATURE = process.env.JWT_USER_ACCESS_SIGNATURE;
 
 export const REDIS_URI = process.env.REDIS_URI;
+
+export const EMAIL_USER = process.env.EMAIL_USER;
+export const EMAIL_PASS = process.env.EMAIL_PASS;

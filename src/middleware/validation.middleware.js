@@ -1,8 +1,11 @@
 import { BadRequestException } from "../common/exceptions/app.exceptions.js";
+import { SystemLanguageEnum } from "../common/enum/system.enum.js";
 
 function validation(schema) {
   return function (req, res, next) {
-    const validateData = schema.safeParse({
+    const lang = req.headers["accept-language"] || SystemLanguageEnum.EN;
+
+    const validateData = schema(lang).safeParse({
       body: req.body,
       params: req.params,
       query: req.query,

@@ -1,16 +1,38 @@
 import { client } from "../DB/redis.connection.js";
 
-export async function getBaseRevokeTokenKey({ userId }) {
+// =============================== KEYS SERVICES ==================================
+
+export function getAllKeys(prefix) {
+  return `${prefix}*`;
+}
+
+// ========= Email Keys Services =========
+
+export function getEmailBaseKey({ email }) {
+  return `User::${email}`;
+}
+
+export function getEmailKey({ email, subject }) {
+  return `${getEmailBaseKey({ email })}::${subject}`;
+}
+export function getTrialsKey({ email, subject }) {
+  return `${getEmailKey({ email, subject })}::Trials`;
+}
+export function getBannedKey({ email, subject }) {
+  return `${getEmailKey({ email, subject })}::Banned`;
+}
+
+// ========= Token Revoke Keys Services =========
+
+export function getBaseRevokeTokenKey({ userId }) {
   return `User::${userId}::RevokeToken`;
 }
 
-export async function getRevokeTokenKey({ userId, jti }) {
-  return `${getBaseRevokeTokenKey(userId)}::${jti}`;
+export function getRevokeTokenKey({ userId, jti }) {
+  return `${getBaseRevokeTokenKey({ userId })}::${jti}`;
 }
 
-export async function getAllKeys(prefix) {
-  return `${prefix}*`;
-}
+// ====================== Cache Services ======================
 
 export async function setValue({
   key,
@@ -31,6 +53,9 @@ export async function setValue({
 }
 
 export async function getValue(key) {
+  if (typeof key === "object" && key?.key) {
+    key = key.key;
+  }
   let result;
   try {
     result = await client.get(key);
@@ -41,14 +66,23 @@ export async function getValue(key) {
 }
 
 export async function delKey(key) {
+  if (typeof key === "object" && key?.key) {
+    key = key.key;
+  }
   return await client.del(key);
 }
 
 export async function ttlKey(key) {
+  if (typeof key === "object" && key?.key) {
+    key = key.key;
+  }
   return await client.ttl(key);
 }
 
 export async function isExists(key) {
+  if (typeof key === "object" && key?.key) {
+    key = key.key;
+  }
   return await client.exists(key);
 }
 
@@ -64,4 +98,8 @@ export async function updateValue({
   }
 
   return await setValue({ key, value, options });
+}
+
+export async function incrKey({ key, value = 1 }) {
+  return await client.incrBy(key, value);
 }

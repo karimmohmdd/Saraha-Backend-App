@@ -13,6 +13,8 @@ async function bootstrap() {
 
   await dbConnection();
 
+  app.use("/assets", express.static("./assets"));
+
   app.use("/auth", authController);
   app.use("/user", userRouter);
 
