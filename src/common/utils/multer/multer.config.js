@@ -1,12 +1,17 @@
 import multer from "multer";
 import { mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
+import { resolve } from "path";
 
-const localUpload = ({ acceptedFileTypes = [], fileSize = 5 }) => {
+const localUpload = ({
+  acceptedFileTypes = [],
+  fileSize = 5,
+  folderName = "General",
+}) => {
   const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
-      const dist = "./assets";
-      await mkdir(dist, { recursive: true });
+      const dist = `./assets/${folderName}`;
+      await mkdir(resolve(dist), { recursive: true });
       cb(null, dist);
     },
     filename: (req, file, cb) => {

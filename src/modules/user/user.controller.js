@@ -3,13 +3,17 @@ import { successResponse } from "../../common/response/success.response.js";
 import auth from "../../middleware/authentication.middleware.js";
 import validation from "../../middleware/validation.middleware.js";
 import { TokenTypeEnum } from "../../common/enum/token.enum.js";
-import { logout, rotateToken } from "./user.service.js";
+import { logout, rotateToken, uploadProfilePic } from "./user.service.js";
 import { authorization } from "../../middleware/authorization.middleware.js";
 import { RoleEnum } from "../../common/enum/user.enum.js";
 import { logoutSchema } from "./user.validation.js";
 import localUpload from "../../common/utils/multer/multer.config.js";
 import { FileTypesEnum } from "../../common/enum/multer.enum.js";
-import { processFile } from "../../common/utils/multer/multer.service.js";
+import {
+  checkFileContent,
+  handelFileMiddleware,
+} from "../../middleware/multer.middleware.js";
+
 const userRouter = Router();
 
 userRouter.get("/get-profile", auth(), async (req, res) => {
@@ -41,21 +45,18 @@ userRouter.post(
 
 userRouter.post(
   "/upload-profile-pic",
-  // auth(),
-  localUpload({ acceptedFileTypes: FileTypesEnum.image, fileSize: 5 }).single(
-    "profilePic",
-  ),
-  processFile(FileTypesEnum.image),
+  auth(),
+  handelFileMiddleware({
+    multerMiddleware: localUpload({
+      acceptedFileTypes: FileTypesEnum.image,
+      folderName: "User",
+    }).single("profilePic"),
+    folderName: "User",
+    acceptedFileTypes: FileTypesEnum.image,
+  }),
   async (req, res) => {
-    successResponse({
-      res,
-      data: {
-        "req.body": req.body,
-        "req.file": req.file,
-        "req.files": req.files,
-      },
-    });
+    uploadProfilePic(req.user, req.file);
+    successResponse({ res });
   },
 );
-
 export default userRouter;

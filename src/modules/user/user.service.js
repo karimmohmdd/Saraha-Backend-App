@@ -53,3 +53,8 @@ export async function logout(payload, user, action) {
       break;
   }
 }
+
+export async function uploadProfilePic(user, file) {
+  user.profilePicPath = file.finalPath;
+  await user.save();
+}
